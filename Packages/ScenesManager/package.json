@@ -1,0 +1,19 @@
+{
+  "name": "com.atoxic.scenes",
+  "displayName": "Scene Management",
+  "version": "1.0.4",
+  "description": "The package is used to operate the Unity scenes.",
+  "keywords": [
+    "unity",
+    "package",
+    "scenes"
+  ],
+  "dependencies": {},
+  "samples": [
+    {
+      "displayName": "Generic Samples",
+      "description": "Generic Samples to test the Load and Unload the scenes.",
+      "path": "Samples~/GenericSamples"
+    }
+  ]
+}

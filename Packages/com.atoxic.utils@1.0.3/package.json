@@ -1,0 +1,12 @@
+{
+  "name": "com.atoxic.utils",
+  "version": "1.0.3",
+  "displayName": "Utils",
+  "description": "Utils",
+  "unity": "2020.3",
+  "author": {
+    "name": "Atoxic",
+    "email": "pawlos.data.arch@gmail.com",
+    "url": "https://gitlab.com/archive_data"
+  }
+}

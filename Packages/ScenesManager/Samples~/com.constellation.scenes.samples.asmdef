@@ -1,0 +1,17 @@
+{
+    "name": "com.constellation.scenes.samples",
+    "rootNamespace": "SceneManagement.Samples",
+    "references": [
+        "GUID:778dc4e5168814d6c905321450df6e8f",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

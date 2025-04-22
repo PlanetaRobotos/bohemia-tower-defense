@@ -1,0 +1,5 @@
+public enum SceneLibraryConstants : byte
+{
+	BOOTSCENE_SCENEMANAGEMENTSAMPLE = 0,
+	GAMESCENE_SCENEMANAGEMENTSAMPLE = 1
+}
