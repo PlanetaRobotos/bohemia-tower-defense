@@ -1,6 +1,7 @@
 using Windows.Global;
 using Features.Towers;
 using UnityEngine;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Spawning
 {
@@ -35,6 +36,7 @@ namespace Features.Spawning
 
         public Material invalidPositionMaterial;
         [Inject] private GameUI _gameUI;
+        [Inject] private IUpdater Updater { get; }
 
         /// <summary>
         ///     The list of attached mesh renderers
@@ -66,11 +68,20 @@ namespace Features.Spawning
         /// </summary>
         public Collider ghostCollider { get; private set; }
 
+        protected virtual void Awake()
+        {
+            Updater.Subscribe(OnUpdate, 0);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
+        }
 
         /// <summary>
         ///     Damp the movement of the ghost
         /// </summary>
-        protected virtual void Update()
+        protected virtual void OnUpdate(float _)
         {
             var currentPos = transform.position;
 

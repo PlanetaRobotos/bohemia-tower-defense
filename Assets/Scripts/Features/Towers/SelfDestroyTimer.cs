@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using Utils;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Towers
 {
@@ -24,10 +25,22 @@ namespace Features.Towers
 	    /// </summary>
 	    public Timer timer;
 
+	    [Inject] private IUpdater Updater { get; }
+
+	    protected virtual void Awake()
+        {
+            Updater.Subscribe(OnUpdate, 0);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
+        }
+
 	    /// <summary>
 	    ///     Update the timer
 	    /// </summary>
-	    protected virtual void Update()
+	    protected virtual void OnUpdate(float _)
         {
             if (timer == null) return;
             timer.Tick(Time.deltaTime);

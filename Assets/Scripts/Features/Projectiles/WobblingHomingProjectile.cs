@@ -55,12 +55,12 @@ namespace Features.Projectiles
         protected Vector3 m_WobbleVector,
             m_TargetWobbleVector;
 
-        protected override void Update()
+        protected override void OnUpdate(float _)
         {
             // regular HomingLinearProjectile behaviour, handles a null homing target
             if (m_HomingTarget == null || m_State == State.Targeting)
             {
-                base.Update();
+                base.OnUpdate(_);
                 return;
             }
 

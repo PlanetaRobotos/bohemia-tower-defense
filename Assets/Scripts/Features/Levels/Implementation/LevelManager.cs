@@ -7,6 +7,7 @@ using Features.Levels.Declaration;
 using Features.Towers.Data;
 using Features.Waves;
 using UnityEngine;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Levels.Implementation
 {
@@ -90,6 +91,8 @@ namespace Features.Levels.Implementation
         /// </summary>
         public bool isGameOver => levelState == LevelState.Win || levelState == LevelState.Lose;
 
+        [Inject] private IUpdater Updater { get; }
+
         /// <summary>
         ///     Caches the attached wave manager and subscribes to the spawning completed event
         ///     Sets the level state to intro and ensures that the number of enemies is set to 0
@@ -112,12 +115,14 @@ namespace Features.Levels.Implementation
             {
                 ChangeLevelState(LevelState.SpawningEnemies);
             }
+
+            Updater.Subscribe(OnUpdate, 0);
         }
 
         /// <summary>
         ///     Updates the currency gain controller
         /// </summary>
-        protected virtual void Update()
+        protected virtual void OnUpdate(float _)
         {
             if (alwaysGainCurrency ||
                 (!alwaysGainCurrency && levelState != LevelState.Building && levelState != LevelState.Intro))
@@ -134,6 +139,8 @@ namespace Features.Levels.Implementation
             foreach (var homeBase in homeBases)
                 if (homeBase != null)
                     homeBase.died -= OnHomeBaseDestroyed;
+
+            Updater?.Unsubscribe(OnUpdate);
         }
 
         /// <summary>

@@ -5,6 +5,7 @@ using TowerDefense.Nodes;
 using UnityEngine;
 using UnityEngine.AI;
 using Utils;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Agents
 {
@@ -113,6 +114,8 @@ namespace Features.Agents
 	    /// </summary>
 	    protected virtual bool isAtDestination =>
             navMeshNavMeshAgent.remainingDistance <= navMeshNavMeshAgent.stoppingDistance;
+	    
+	    [Inject] private IUpdater Updater { get; }
 
 	    /// <summary>
 	    ///     Lazy Load, if necesaary and ensure the NavMeshAgent is disabled
@@ -122,13 +125,14 @@ namespace Features.Agents
             base.Awake();
             LazyLoad();
             m_NavMeshAgent.enabled = false;
+            Updater.Subscribe(OnUpdate, 0);
         }
 
 	    /// <summary>
 	    ///     Updates the agent in its different states,
 	    ///     Reset destination when path is stale
 	    /// </summary>
-	    protected virtual void Update()
+	    protected virtual void OnUpdate(float _)
         {
             // Update behaviour for different states
             PathUpdate();
@@ -151,6 +155,10 @@ namespace Features.Agents
             }
         }
 
+	    protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
+        }
 
 #if UNITY_EDITOR
 	    /// <summary>

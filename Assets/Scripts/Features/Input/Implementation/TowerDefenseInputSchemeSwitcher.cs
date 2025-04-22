@@ -27,11 +27,11 @@ namespace Features.Input.Implementation
         /// <summary>
         ///     Do nothing when game is paused
         /// </summary>
-        protected override void Update()
+        protected override void OnUpdate(float _)
         {
             if (isPaused) return;
 
-            base.Update();
+            base.OnUpdate(_);
         }
 
         /// <summary>

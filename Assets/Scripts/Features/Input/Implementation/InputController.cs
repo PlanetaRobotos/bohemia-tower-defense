@@ -4,6 +4,7 @@ using System.Linq;
 using Features.Input.Models;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 using Debug = System.Diagnostics.Debug;
 using UnityInput = UnityEngine.Input;
 
@@ -89,6 +90,8 @@ namespace Features.Input.Implementation
 	    /// </summary>
 	    public MouseCursorInfo basicMouseInfo { get; private set; }
 
+        [Inject] private IUpdater Updater { get; }
+
         protected void Awake()
         {
             m_Touches = new List<TouchInfo>();
@@ -103,12 +106,18 @@ namespace Features.Input.Implementation
                 });
 
             UnityInput.simulateMouseWithTouches = false;
+            Updater.Subscribe(OnUpdate, 0);
+        }
+
+        protected void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
         }
 
         /// <summary>
         ///     Update all input
         /// </summary>
-        private void Update()
+        private void OnUpdate(float _)
         {
             if (basicMouseInfo != null)
                 // Mouse was detected as present

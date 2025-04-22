@@ -53,9 +53,9 @@ namespace Features.Input.Implementation
 	    /// <summary>
 	    ///     Decay flick
 	    /// </summary>
-	    protected override void Update()
+	    protected override void OnUpdate(float _)
         {
-            base.Update();
+            base.OnUpdate(_);
 
             // Edge pan
             if (m_DragPointer != null) EdgePan();

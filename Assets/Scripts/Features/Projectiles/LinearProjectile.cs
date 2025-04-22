@@ -2,6 +2,7 @@
 using Features.Projectiles.Abstract;
 using UnityEngine;
 using Utils;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Projectiles
 {
@@ -11,6 +12,8 @@ namespace Features.Projectiles
 	[RequireComponent(typeof(Rigidbody))]
     public class LinearProjectile : MonoBehaviour, IProjectile
     {
+        [Inject] private IUpdater Updater { get; }
+
         public float acceleration;
 
         public float startSpeed;
@@ -22,9 +25,15 @@ namespace Features.Projectiles
         protected virtual void Awake()
         {
             m_Rigidbody = GetComponent<Rigidbody>();
+            Updater.Subscribe(OnUpdate, 0);
         }
 
-        protected virtual void Update()
+        protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
+        }
+
+        protected virtual void OnUpdate(float _)
         {
             if (!m_Fired) return;
 

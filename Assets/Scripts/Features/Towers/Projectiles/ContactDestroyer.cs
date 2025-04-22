@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Utils;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Towers.Projectiles
 {
@@ -18,20 +19,28 @@ namespace Features.Towers.Projectiles
 	    /// </summary>
 	    protected Collider m_AttachedCollider;
 
+	    [Inject] private IUpdater Updater { get; }
+
 	    /// <summary>
 	    ///     Caches the attached collider
 	    /// </summary>
 	    protected virtual void Awake()
         {
             m_AttachedCollider = GetComponent<Collider>();
+            Updater.Subscribe(OnUpdate, 0);
         }
 
 	    /// <summary>
 	    ///     Checks the y-position against <see cref="yDestroyPoint" />
 	    /// </summary>
-	    protected virtual void Update()
+	    protected virtual void OnUpdate(float _)
         {
             if (transform.position.y < yDestroyPoint) ReturnToPool();
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
         }
 
         private void OnCollisionEnter(Collision other)

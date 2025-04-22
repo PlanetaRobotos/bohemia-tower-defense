@@ -19,7 +19,7 @@ namespace Features.Projectiles
 
         private Vector3 m_TargetVelocity;
 
-        protected override void Update()
+        protected override void OnUpdate(float _)
         {
             if (!m_Fired) return;
 
@@ -34,7 +34,7 @@ namespace Features.Projectiles
             m_Rigidbody.rotation = aimDirection;
             m_Rigidbody.linearVelocity = transform.forward * m_Rigidbody.linearVelocity.magnitude;
 
-            base.Update();
+            base.OnUpdate(_);
         }
 
         protected virtual void FixedUpdate()

@@ -4,6 +4,7 @@ using Features.Towers;
 using Features.Towers.Projectiles;
 using TowerDefense.Targetting;
 using UnityEngine;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Affectors
 {
@@ -92,10 +93,12 @@ namespace Features.Affectors
 
         public Damager damagerProjectile => projectile == null ? null : projectile.GetComponent<Damager>();
 
+        [Inject] private IUpdater Updater { get; }
+
         /// <summary>
         ///     Update the timers
         /// </summary>
-        protected virtual void Update()
+        protected virtual void OnUpdate(float _)
         {
             m_FireTimer -= Time.deltaTime;
             if (trackingEnemy != null && m_FireTimer <= 0.0f)
@@ -109,6 +112,7 @@ namespace Features.Affectors
         {
             towerTargetter.acquiredTarget -= OnAcquiredTarget;
             towerTargetter.lostTarget -= OnLostTarget;
+            Updater?.Unsubscribe(OnUpdate);
         }
 
 #if UNITY_EDITOR
@@ -150,6 +154,8 @@ namespace Features.Affectors
             towerTargetter.alignment = affectorAlignment;
             towerTargetter.acquiredTarget += OnAcquiredTarget;
             towerTargetter.lostTarget += OnLostTarget;
+            
+            Updater.Subscribe(OnUpdate, 0);
         }
 
         private void OnLostTarget()

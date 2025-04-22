@@ -1,5 +1,6 @@
 using Features.Input.Models;
 using UnityEngine;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Camera
 {
@@ -128,6 +129,8 @@ namespace Features.Camera
         /// </summary>
         public UnityEngine.Camera cachedCamera { get; private set; }
 
+        [Inject] private IUpdater Updater { get; }
+
         /// <summary>
         ///     Initialize references and floor plane
         /// </summary>
@@ -146,6 +149,8 @@ namespace Features.Camera
             m_MinZoomRotation = Quaternion.FromToRotation(Vector3.up, -cachedCamera.transform.forward);
             m_MaxZoomRotation = Quaternion.FromToRotation(Vector3.up, -zoomedCamAngle.transform.forward);
             rawZoomDist = zoomDist = (currentLookPosition - cameraPosition).magnitude;
+
+            Updater.Subscribe(OnUpdate, 0);
         }
 
         /// <summary>
@@ -159,7 +164,7 @@ namespace Features.Camera
         /// <summary>
         ///     Handle camera behaviour
         /// </summary>
-        protected virtual void Update()
+        protected virtual void OnUpdate(float _)
         {
             RecalculateBoundingRect();
 
@@ -181,6 +186,11 @@ namespace Features.Camera
 
             transform.position = worldPos;
             transform.LookAt(currentLookPosition);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
         }
 
 #if UNITY_EDITOR

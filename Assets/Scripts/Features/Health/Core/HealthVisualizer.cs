@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using Infrastructure.Services.ApplicationObservers.Runtime;
+using UnityEngine;
 
 namespace Features.Health.Core
 {
@@ -7,6 +9,8 @@ namespace Features.Health.Core
 	/// </summary>
 	public class HealthVisualizer : MonoBehaviour
     {
+	    [Inject] private IUpdater Updater { get; }
+
 	    /// <summary>
 	    ///     The DamageableBehaviour that will be used to assign the damageable
 	    /// </summary>
@@ -44,6 +48,8 @@ namespace Features.Health.Core
 	    protected virtual void Awake()
         {
             if (damageableBehaviour != null) AssignDamageable(damageableBehaviour.configuration);
+            
+            Updater.Subscribe(OnUpdate, 0);
         }
 
 	    /// <summary>
@@ -57,7 +63,7 @@ namespace Features.Health.Core
 	    /// <summary>
 	    ///     Turns us to face the camera
 	    /// </summary>
-	    protected virtual void Update()
+	    protected virtual void OnUpdate(float _)
         {
             var direction = m_CameraToFace.transform.forward;
             transform.forward = -direction;
@@ -108,6 +114,11 @@ namespace Features.Health.Core
         private void OnHealthChanged(HealthChangeInfo healthChangeInfo)
         {
             UpdateHealth(m_Damageable.normalisedHealth);
+        }
+
+        private void OnDestroy()
+        {
+	        Updater?.Unsubscribe(OnUpdate);
         }
     }
 }

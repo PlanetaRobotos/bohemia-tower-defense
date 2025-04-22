@@ -2,6 +2,7 @@
 using Features.Input.Models;
 using UnityEngine;
 using UnityInput = UnityEngine.Input;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Input.Implementation
 {
@@ -25,6 +26,7 @@ namespace Features.Input.Implementation
 	    /// </summary>
 	    public float mouseRmbPanSpeed = 15f;
 
+	    [Inject] private IUpdater Updater { get; }
 
 	    /// <summary>
 	    ///     Gets whether the scheme should be activated or not
@@ -60,7 +62,7 @@ namespace Features.Input.Implementation
 	    /// <summary>
 	    ///     Handle camera panning behaviour
 	    /// </summary>
-	    protected virtual void Update()
+	    protected virtual void OnUpdate(float _)
         {
             if (cameraRig != null)
             {
@@ -261,6 +263,16 @@ namespace Features.Input.Implementation
 
                 cameraRig.StopTracking();
             }
+        }
+
+        protected virtual void Awake()
+        {
+            Updater.Subscribe(OnUpdate, 0);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
         }
     }
 }

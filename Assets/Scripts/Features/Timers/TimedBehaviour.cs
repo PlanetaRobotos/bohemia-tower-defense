@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Utils
 {
@@ -8,15 +9,27 @@ namespace Utils
 	/// </summary>
 	public abstract class TimedBehaviour : MonoBehaviour
     {
+        [Inject] private IUpdater Updater { get; }
+
 	    /// <summary>
 	    ///     List of active timers
 	    /// </summary>
 	    private readonly List<Timer> m_ActiveTimers = new();
 
+        protected virtual void Awake()
+        {
+            Updater.Subscribe(OnUpdate, 0);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
+        }
+
 	    /// <summary>
 	    ///     Iterates through the list of active timers and ticks
 	    /// </summary>
-	    protected virtual void Update()
+	    protected virtual void OnUpdate(float _)
         {
             for (var i = m_ActiveTimers.Count - 1; i >= 0; i--)
                 if (m_ActiveTimers[i].Tick(Time.deltaTime))

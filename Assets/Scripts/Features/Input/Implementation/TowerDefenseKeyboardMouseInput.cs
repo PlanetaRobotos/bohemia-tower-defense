@@ -16,9 +16,9 @@ namespace Features.Input.Implementation
         /// <summary>
         ///     Handle camera panning behaviour
         /// </summary>
-        protected override void Update()
+        protected override void OnUpdate(float _)
         {
-            base.Update();
+            base.OnUpdate(_);
 
             // Escape handling
             if (UnityInput.GetKeyDown(KeyCode.Escape))

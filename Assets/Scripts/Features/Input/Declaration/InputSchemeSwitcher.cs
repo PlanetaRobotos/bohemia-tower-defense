@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Infrastructure.Services.ApplicationObservers.Runtime;
+using UnityEngine;
 
 namespace Features.Input.Declaration
 {
@@ -8,6 +9,8 @@ namespace Features.Input.Declaration
 	[DisallowMultipleComponent]
     public class InputSchemeSwitcher : MonoBehaviour
     {
+	    [Inject] private IUpdater Updater { get; }
+		
 	    /// <summary>
 	    ///     The current scheme activated
 	    /// </summary>
@@ -43,12 +46,14 @@ namespace Features.Input.Declaration
 
             m_DefaultScheme.Activate(null);
             m_CurrentScheme = m_DefaultScheme;
+            
+            Updater.Subscribe(OnUpdate, 0);
         }
 
 	    /// <summary>
 	    ///     Checks the different schemes and activates them if needed
 	    /// </summary>
-	    protected virtual void Update()
+	    protected virtual void OnUpdate(float _)
         {
             foreach (var scheme in m_InputSchemes)
             {
@@ -58,6 +63,11 @@ namespace Features.Input.Declaration
                 m_CurrentScheme = scheme;
                 break;
             }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
         }
     }
 }

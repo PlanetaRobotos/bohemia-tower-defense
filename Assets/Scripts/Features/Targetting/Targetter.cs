@@ -4,6 +4,7 @@ using Features.Health;
 using Features.Health.Core;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace TowerDefense.Targetting
 {
@@ -92,6 +93,8 @@ namespace TowerDefense.Targetting
 	    /// </summary>
 	    protected float m_XRotationCorrectionTime;
 
+	    [Inject] private IUpdater Updater { get; }
+
 	    /// <summary>
 	    ///     returns the radius of the collider whether
 	    ///     its a sphere or capsule
@@ -120,7 +123,7 @@ namespace TowerDefense.Targetting
 	    /// <summary>
 	    ///     Checks if any targets are destroyed and aquires a new targetable if appropriate
 	    /// </summary>
-	    protected virtual void Update()
+	    protected virtual void OnUpdate(float _)
         {
             m_SearchTimer -= Time.deltaTime;
 
@@ -350,6 +353,16 @@ namespace TowerDefense.Targetting
                 angle += 360;
             else if (angle > 180) angle -= 360;
             return angle;
+        }
+
+	    protected virtual void Awake()
+        {
+            Updater.Subscribe(OnUpdate, 0);
+        }
+
+	    protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
         }
     }
 }

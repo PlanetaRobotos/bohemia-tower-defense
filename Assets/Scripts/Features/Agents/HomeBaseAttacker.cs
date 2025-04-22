@@ -1,5 +1,6 @@
 ﻿using Features.Health;
 using Features.Health.Core;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 using TowerDefense.Nodes;
 using UnityEngine;
 using Utils;
@@ -12,6 +13,8 @@ namespace Features.Agents
 	[RequireComponent(typeof(Agent))]
     public class HomeBaseAttacker : MonoBehaviour
     {
+	    [Inject] private IUpdater Updater { get; }
+
 	    /// <summary>
 	    ///     How long the agent charges for before it attacks
 	    ///     the home base
@@ -46,12 +49,14 @@ namespace Features.Agents
             agent = GetComponent<Agent>();
             agent.destinationReached += OnDestinationReached;
             agent.died += OnDied;
+            
+            Updater.Subscribe(OnUpdate, 0);
         }
 
 	    /// <summary>
 	    ///     Ticks the attack timer
 	    /// </summary>
-	    protected virtual void Update()
+	    protected virtual void OnUpdate(float _)
         {
             // Update HomeBaseAttack Timer
             if (m_IsChargingHomeBaseAttack) m_HomeBaseAttackTimer.Tick(Time.deltaTime);

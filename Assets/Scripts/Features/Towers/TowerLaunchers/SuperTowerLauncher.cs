@@ -40,7 +40,7 @@ namespace Features.Towers.TowerLaunchers
         /// <summary>
         ///     Tick the timer
         /// </summary>
-        protected void Update()
+        protected void OnUpdate(float _)
         {
             if (m_LifeTimer == null) return;
             m_LifeTimer.Tick(Time.deltaTime);

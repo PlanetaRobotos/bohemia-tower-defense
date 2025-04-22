@@ -1,6 +1,7 @@
 ﻿using Features.Health;
 using UnityEngine;
 using Utils;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Towers.Projectiles
 {
@@ -42,6 +43,8 @@ namespace Features.Towers.Projectiles
 	    /// </summary>
 	    protected Timer m_Timer;
 
+	    [Inject] private IUpdater Updater { get; }
+
 	    /// <summary>
 	    ///     Cache the damager component attached to this object
 	    /// </summary>
@@ -49,12 +52,13 @@ namespace Features.Towers.Projectiles
         {
             m_Damager = GetComponent<Damager>();
             m_Timer = new Timer(delay, DealDamage);
+            Updater.Subscribe(OnUpdate, 0);
         }
 
 	    /// <summary>
 	    ///     Update the m_Timer if it is available
 	    /// </summary>
-	    protected virtual void Update()
+	    protected virtual void OnUpdate(float _)
         {
             if (!m_PauseTimer) m_Timer.Tick(Time.deltaTime);
         }
@@ -94,6 +98,11 @@ namespace Features.Towers.Projectiles
 
             m_Enemy.TakeDamage(m_Damager.damage, m_Enemy.position, m_Damager.alignmentProvider);
             m_PauseTimer = true;
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
         }
     }
 }

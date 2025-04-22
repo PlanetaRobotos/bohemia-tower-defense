@@ -3,6 +3,7 @@ using Features.Projectiles.Abstract;
 using Features.Towers;
 using UnityEngine;
 using Utils;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Projectiles.Effects
 {
@@ -46,6 +47,8 @@ namespace Features.Projectiles.Effects
 	    /// </summary>
 	    private GameObject m_SpawnedEffect;
 
+	    [Inject] private IUpdater Updater { get; }
+
 	    /// <summary>
 	    ///     Register projectile fire events
 	    /// </summary>
@@ -54,12 +57,13 @@ namespace Features.Projectiles.Effects
             m_Projectile = GetComponent<IProjectile>();
             m_Projectile.fired += OnFired;
             if (followTransform != null) followTransform = transform;
+            Updater.Subscribe(OnUpdate, 0);
         }
 
 	    /// <summary>
 	    ///     Make effect follow us
 	    /// </summary>
-	    protected virtual void Update()
+	    protected virtual void OnUpdate(float _)
         {
             // Make the effect follow our position.
             // We don't reparent it because it should not be disabled when we are
@@ -96,6 +100,7 @@ namespace Features.Projectiles.Effects
 	    protected virtual void OnDestroy()
         {
             m_Projectile.fired -= OnFired;
+            Updater?.Unsubscribe(OnUpdate);
         }
 
 	    /// <summary>

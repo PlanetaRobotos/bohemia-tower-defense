@@ -30,7 +30,7 @@ namespace Features.Levels.Implementation
 	    /// <summary>
 	    ///     Tick the timer and disable it on completion
 	    /// </summary>
-	    protected void Update()
+	    protected void OnUpdate(float _)
         {
             if (m_Timer != null)
                 if (m_Timer.Tick(Time.deltaTime))

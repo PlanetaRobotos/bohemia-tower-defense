@@ -4,6 +4,7 @@ using Features.Projectiles.Abstract;
 using Features.Projectiles.Data;
 using UnityEngine;
 using Utils;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Projectiles
 {
@@ -13,6 +14,8 @@ namespace Features.Projectiles
 	[RequireComponent(typeof(Rigidbody))]
     public class BallisticProjectile : MonoBehaviour, IProjectile
     {
+        [Inject] private IUpdater Updater { get; }
+
         public BallisticArcHeight arcPreference;
 
         public BallisticFireMode fireMode;
@@ -42,9 +45,15 @@ namespace Features.Projectiles
         {
             m_Rigidbody = GetComponent<Rigidbody>();
             m_Colliders = GetComponentsInChildren<Collider>();
+            Updater.Subscribe(OnUpdate, 0);
         }
 
-        protected virtual void Update()
+        protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
+        }
+
+        protected virtual void OnUpdate(float _)
         {
             if (!m_Fired) return;
             // If we are ignoring collisions, increment counter. 

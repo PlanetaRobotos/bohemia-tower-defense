@@ -1,6 +1,7 @@
 ﻿using Features.Input.Models;
 using UnityEngine;
 using UnityInput = UnityEngine.Input;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Input.Declaration
 {
@@ -44,10 +45,22 @@ namespace Features.Input.Declaration
             }
         }
 
+	    [Inject] private IUpdater Updater { get; }
+
+	    protected virtual void Awake()
+        {
+            Updater.Subscribe(OnUpdate, 0);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
+        }
+
 	    /// <summary>
 	    ///     Perform flick and zoom
 	    /// </summary>
-	    protected virtual void Update()
+	    protected virtual void OnUpdate(float _)
         {
             if (cameraRig != null)
             {
