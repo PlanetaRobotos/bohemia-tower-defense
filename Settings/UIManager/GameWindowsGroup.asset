@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f1fd58edddcb0d449eb25a5b04e6412, type: 3}
+  m_Name: GameWindowsGroup
+  m_EditorClassIdentifier: 
+  id: GameWindows
+  windowsData:
+  - windowId: HUDWindow
+    windowRef:
+      m_AssetGUID: 34f59aa4b15269547a0e26591e319327
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 1
+  - windowId: PauseWindow
+    windowRef:
+      m_AssetGUID: f2c84fb68fbea4461b4b20d53d70213c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - windowId: EndGameWindow
+    windowRef:
+      m_AssetGUID: 2eb1899defae34da2b354d8e1d91da35
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - windowId: TowerWindow
+    windowRef:
+      m_AssetGUID: 4eadf710c1ae841f9aea598e5ca2f8c7
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - windowId: MainMenuWindow
+    windowRef:
+      m_AssetGUID: 26cf2a88cd157284293a1fa14002ce12
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
