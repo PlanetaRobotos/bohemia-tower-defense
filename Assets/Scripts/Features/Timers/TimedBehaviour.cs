@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Infrastructure.Services.ApplicationObservers.Runtime;
 
@@ -15,10 +16,10 @@ namespace Utils
 	    ///     List of active timers
 	    /// </summary>
 	    private readonly List<Timer> m_ActiveTimers = new();
-
-        protected virtual void Awake()
+	    
+        private void Start()
         {
-            Updater.Subscribe(OnUpdate, 0);
+	        Updater.Subscribe(OnUpdate, 0);
         }
 
         protected virtual void OnDestroy()

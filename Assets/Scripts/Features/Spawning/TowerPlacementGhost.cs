@@ -1,3 +1,4 @@
+using System;
 using Windows.Global;
 using Features.Towers;
 using UnityEngine;
@@ -67,10 +68,10 @@ namespace Features.Spawning
         ///     The attached the collider
         /// </summary>
         public Collider ghostCollider { get; private set; }
-
-        protected virtual void Awake()
+        
+        private void Start()
         {
-            Updater.Subscribe(OnUpdate, 0);
+	        Updater.Subscribe(OnUpdate, 0);
         }
 
         protected virtual void OnDestroy()

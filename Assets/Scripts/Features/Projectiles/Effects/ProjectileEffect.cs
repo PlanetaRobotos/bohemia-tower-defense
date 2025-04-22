@@ -1,4 +1,5 @@
-﻿using Features.ObjectPool.Effects;
+﻿using System;
+using Features.ObjectPool.Effects;
 using Features.Projectiles.Abstract;
 using Features.Towers;
 using UnityEngine;
@@ -57,8 +58,12 @@ namespace Features.Projectiles.Effects
             m_Projectile = GetComponent<IProjectile>();
             m_Projectile.fired += OnFired;
             if (followTransform != null) followTransform = transform;
-            Updater.Subscribe(OnUpdate, 0);
         }
+
+	    private void Start()
+	    {
+		    Updater.Subscribe(OnUpdate, 0);
+	    }
 
 	    /// <summary>
 	    ///     Make effect follow us

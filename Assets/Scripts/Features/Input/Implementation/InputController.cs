@@ -106,6 +106,10 @@ namespace Features.Input.Implementation
                 });
 
             UnityInput.simulateMouseWithTouches = false;
+        }
+
+        private void Start()
+        {
             Updater.Subscribe(OnUpdate, 0);
         }
 

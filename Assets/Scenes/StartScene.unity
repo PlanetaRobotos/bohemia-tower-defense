@@ -1140,12 +1140,12 @@ PrefabInstance:
     - target: {fileID: 224618823694631672, guid: 4eadf710c1ae841f9aea598e5ca2f8c7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -103.29997
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224618823694631672, guid: 4eadf710c1ae841f9aea598e5ca2f8c7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224969066576691682, guid: 4eadf710c1ae841f9aea598e5ca2f8c7,
         type: 3}
@@ -1625,7 +1625,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
-  logTasks: 1
+  logTasks: 0
   durationSensivity: 0
 --- !u!1 &8115018253096807325
 GameObject:

@@ -1,4 +1,5 @@
-﻿using Features.Input.Models;
+﻿using System;
+using Features.Input.Models;
 using UnityEngine;
 using UnityInput = UnityEngine.Input;
 using Infrastructure.Services.ApplicationObservers.Runtime;
@@ -49,10 +50,14 @@ namespace Features.Input.Declaration
 
 	    protected virtual void Awake()
         {
-            Updater.Subscribe(OnUpdate, 0);
         }
 
-        protected virtual void OnDestroy()
+	    private void Start()
+	    {
+		    Updater.Subscribe(OnUpdate, 0);
+	    }
+
+	    protected virtual void OnDestroy()
         {
             Updater?.Unsubscribe(OnUpdate);
         }

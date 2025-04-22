@@ -1,6 +1,8 @@
-﻿using Features.Levels.Declaration;
+﻿using System;
+using Features.Levels.Declaration;
 using UnityEngine;
 using Utils;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Levels.Implementation
 {
@@ -9,6 +11,8 @@ namespace Features.Levels.Implementation
 	/// </summary>
 	public class TimedLevelIntro : LevelIntro
     {
+        [Inject] private IUpdater Updater { get; }
+
 	    /// <summary>
 	    ///     The delay
 	    /// </summary>
@@ -22,15 +26,25 @@ namespace Features.Levels.Implementation
 	    /// <summary>
 	    ///     Set up the timer and make it fire the SafelyCallIntroCompleted event
 	    /// </summary>
-	    protected void Awake()
+	    protected virtual void Awake()
         {
             m_Timer = new Timer(time, SafelyCallIntroCompleted);
+        }
+
+	    private void Start()
+	    {
+		    Updater.Subscribe(OnUpdate, 0);
+	    }
+
+	    protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
         }
 
 	    /// <summary>
 	    ///     Tick the timer and disable it on completion
 	    /// </summary>
-	    protected void OnUpdate(float _)
+	    protected virtual void OnUpdate(float _)
         {
             if (m_Timer != null)
                 if (m_Timer.Tick(Time.deltaTime))

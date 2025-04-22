@@ -45,7 +45,11 @@ namespace Features.Projectiles
         {
             m_Rigidbody = GetComponent<Rigidbody>();
             m_Colliders = GetComponentsInChildren<Collider>();
-            Updater.Subscribe(OnUpdate, 0);
+        }
+
+        private void Start()
+        {
+            Updater.Subscribe(OnUpdate, 0);            
         }
 
         protected virtual void OnDestroy()

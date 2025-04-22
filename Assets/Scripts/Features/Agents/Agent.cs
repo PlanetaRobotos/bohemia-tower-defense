@@ -125,8 +125,12 @@ namespace Features.Agents
             base.Awake();
             LazyLoad();
             m_NavMeshAgent.enabled = false;
-            Updater.Subscribe(OnUpdate, 0);
         }
+
+	    private void Start()
+	    {
+		    Updater.Subscribe(OnUpdate, 0);
+	    }
 
 	    /// <summary>
 	    ///     Updates the agent in its different states,

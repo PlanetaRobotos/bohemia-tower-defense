@@ -1,4 +1,5 @@
-﻿using Infrastructure.Services.ApplicationObservers.Runtime;
+﻿using System;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 using UnityEngine;
 
 namespace Features.Input.Declaration
@@ -46,9 +47,12 @@ namespace Features.Input.Declaration
 
             m_DefaultScheme.Activate(null);
             m_CurrentScheme = m_DefaultScheme;
-            
-            Updater.Subscribe(OnUpdate, 0);
         }
+
+	    private void Start()
+	    {
+		    Updater.Subscribe(OnUpdate, 0);
+	    }
 
 	    /// <summary>
 	    ///     Checks the different schemes and activates them if needed

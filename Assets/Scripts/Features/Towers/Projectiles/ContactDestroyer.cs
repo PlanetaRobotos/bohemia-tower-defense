@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Utils;
 using Infrastructure.Services.ApplicationObservers.Runtime;
 
@@ -27,8 +28,12 @@ namespace Features.Towers.Projectiles
 	    protected virtual void Awake()
         {
             m_AttachedCollider = GetComponent<Collider>();
-            Updater.Subscribe(OnUpdate, 0);
         }
+
+	    private void Start()
+	    {
+		    Updater.Subscribe(OnUpdate, 0);		    
+	    }
 
 	    /// <summary>
 	    ///     Checks the y-position against <see cref="yDestroyPoint" />

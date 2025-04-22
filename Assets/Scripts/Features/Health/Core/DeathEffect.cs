@@ -47,7 +47,7 @@ namespace Features.Health.Core
 	    /// </summary>
 	    private void OnDied(HealthChangeInfo healthChangeInfo)
         {
-            Debug.Log($"Dead: {healthChangeInfo.newHealth}");
+            // Debug.Log($"Dead: {healthChangeInfo.newHealth}");
         }
     }
 }

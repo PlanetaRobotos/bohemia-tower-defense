@@ -149,8 +149,6 @@ namespace Features.Camera
             m_MinZoomRotation = Quaternion.FromToRotation(Vector3.up, -cachedCamera.transform.forward);
             m_MaxZoomRotation = Quaternion.FromToRotation(Vector3.up, -zoomedCamAngle.transform.forward);
             rawZoomDist = zoomDist = (currentLookPosition - cameraPosition).magnitude;
-
-            Updater.Subscribe(OnUpdate, 0);
         }
 
         /// <summary>
@@ -159,6 +157,8 @@ namespace Features.Camera
         protected virtual void Start()
         {
             RecalculateBoundingRect();
+            
+            Updater.Subscribe(OnUpdate, 0);
         }
 
         /// <summary>

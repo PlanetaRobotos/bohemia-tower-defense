@@ -115,7 +115,10 @@ namespace Features.Levels.Implementation
             {
                 ChangeLevelState(LevelState.SpawningEnemies);
             }
+        }
 
+        private void Start()
+        {
             Updater.Subscribe(OnUpdate, 0);
         }
 

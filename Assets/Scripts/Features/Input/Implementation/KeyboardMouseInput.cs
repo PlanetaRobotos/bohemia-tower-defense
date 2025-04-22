@@ -265,12 +265,12 @@ namespace Features.Input.Implementation
             }
         }
 
-        protected virtual void Awake()
+        protected void Start()
         {
             Updater.Subscribe(OnUpdate, 0);
         }
 
-        protected virtual void OnDestroy()
+        protected void OnDestroy()
         {
             Updater?.Unsubscribe(OnUpdate);
         }

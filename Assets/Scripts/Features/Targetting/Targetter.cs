@@ -118,6 +118,8 @@ namespace TowerDefense.Targetting
         {
             m_SearchTimer = searchRate;
             m_WaitTimer = idleWaitTime;
+            
+            Updater.Subscribe(OnUpdate, 0);
         }
 
 	    /// <summary>
@@ -354,12 +356,7 @@ namespace TowerDefense.Targetting
             else if (angle > 180) angle -= 360;
             return angle;
         }
-
-	    protected virtual void Awake()
-        {
-            Updater.Subscribe(OnUpdate, 0);
-        }
-
+	    
 	    protected virtual void OnDestroy()
         {
             Updater?.Unsubscribe(OnUpdate);

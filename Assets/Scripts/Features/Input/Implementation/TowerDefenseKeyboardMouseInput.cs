@@ -4,6 +4,7 @@ using Features.Levels.Implementation;
 using UnityEngine;
 using UnityInput = UnityEngine.Input;
 using State = Windows.Global.GameUI.State;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Input.Implementation
 {
@@ -12,7 +13,7 @@ namespace Features.Input.Implementation
         [Inject] private GameUI _gameUI;
         [Inject] private InputController _inputController;
         [Inject] private LevelManager LevelManager { get; }
-
+    
         /// <summary>
         ///     Handle camera panning behaviour
         /// </summary>

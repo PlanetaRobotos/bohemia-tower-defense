@@ -60,7 +60,7 @@ namespace Features.Levels.Declaration
 	    /// </summary>
 	    protected virtual void OnDamaged(HealthChangeInfo obj)
         {
-            Debug.Log($"Damaged: {name}");
+            // Debug.Log($"Damaged: {name}");
         }
 
 	    /// <summary>

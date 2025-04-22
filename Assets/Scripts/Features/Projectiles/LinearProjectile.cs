@@ -25,6 +25,10 @@ namespace Features.Projectiles
         protected virtual void Awake()
         {
             m_Rigidbody = GetComponent<Rigidbody>();
+        }
+
+        private void Start()
+        {
             Updater.Subscribe(OnUpdate, 0);
         }
 

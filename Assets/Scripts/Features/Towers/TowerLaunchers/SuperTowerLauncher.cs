@@ -7,6 +7,7 @@ using Features.Projectiles;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Towers.TowerLaunchers
 {
@@ -15,6 +16,9 @@ namespace Features.Towers.TowerLaunchers
 	/// </summary>
 	public class SuperTowerLauncher : HomingLauncher
     {
+        [Inject] private IUpdater Updater { get; }
+        [Inject] private LevelManager LevelManager { get; }
+
 	    /// <summary>
 	    ///     How long the tower will stay active
 	    /// </summary>
@@ -35,15 +39,23 @@ namespace Features.Towers.TowerLaunchers
 	    /// </summary>
 	    protected Timer m_LifeTimer;
 
-        [Inject] private LevelManager LevelManager { get; }
-
         /// <summary>
         ///     Tick the timer
         /// </summary>
-        protected void OnUpdate(float _)
+        protected virtual void OnUpdate(float _)
         {
             if (m_LifeTimer == null) return;
             m_LifeTimer.Tick(Time.deltaTime);
+        }
+
+        protected virtual void Start()
+        {
+            Updater.Subscribe(OnUpdate, 0);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Updater?.Unsubscribe(OnUpdate);
         }
 
         /// <summary>

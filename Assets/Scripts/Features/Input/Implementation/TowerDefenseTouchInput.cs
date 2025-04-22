@@ -6,11 +6,14 @@ using Features.Input.Models;
 using UnityEngine;
 using UnityInput = UnityEngine.Input;
 using State = Windows.Global.GameUI.State;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Input.Implementation
 {
     public class TowerDefenseTouchInput : TouchInput
     {
+        [Inject] private IUpdater Updater { get; }
+
 	    /// <summary>
 	    ///     A percentage of the screen where panning occurs while dragging
 	    /// </summary>
@@ -44,10 +47,22 @@ namespace Features.Input.Implementation
 	    /// <summary>
 	    ///     Hide UI
 	    /// </summary>
-	    protected virtual void Awake()
+	    protected override void Awake()
         {
+            base.Awake();
             if (_confirmationButtons != null) _confirmationButtons.canvasEnabled = false;
             if (_invalidButtons != null) _invalidButtons.canvasEnabled = false;
+        }
+
+        private void Start()
+        {
+            Updater.Subscribe(OnUpdate, 0);
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            Updater?.Unsubscribe(OnUpdate);
         }
 
 	    /// <summary>

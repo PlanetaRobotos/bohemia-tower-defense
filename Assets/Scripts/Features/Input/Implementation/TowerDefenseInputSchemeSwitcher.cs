@@ -1,6 +1,7 @@
-﻿using Windows.Global;
+using Windows.Global;
 using Features.Input.Declaration;
 using State = Windows.Global.GameUI.State;
+using Infrastructure.Services.ApplicationObservers.Runtime;
 
 namespace Features.Input.Implementation
 {

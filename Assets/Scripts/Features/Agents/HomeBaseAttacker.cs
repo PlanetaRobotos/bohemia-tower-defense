@@ -1,4 +1,5 @@
-﻿using Features.Health;
+﻿using System;
+using Features.Health;
 using Features.Health.Core;
 using Infrastructure.Services.ApplicationObservers.Runtime;
 using TowerDefense.Nodes;
@@ -49,9 +50,12 @@ namespace Features.Agents
             agent = GetComponent<Agent>();
             agent.destinationReached += OnDestinationReached;
             agent.died += OnDied;
-            
-            Updater.Subscribe(OnUpdate, 0);
         }
+
+	    private void Start()
+	    {
+		    Updater.Subscribe(OnUpdate, 0);
+	    }
 
 	    /// <summary>
 	    ///     Ticks the attack timer

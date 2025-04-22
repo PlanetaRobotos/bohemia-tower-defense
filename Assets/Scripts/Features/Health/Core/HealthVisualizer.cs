@@ -48,8 +48,6 @@ namespace Features.Health.Core
 	    protected virtual void Awake()
         {
             if (damageableBehaviour != null) AssignDamageable(damageableBehaviour.configuration);
-            
-            Updater.Subscribe(OnUpdate, 0);
         }
 
 	    /// <summary>
@@ -57,6 +55,8 @@ namespace Features.Health.Core
 	    /// </summary>
 	    protected virtual void Start()
         {
+	        Updater.Subscribe(OnUpdate, 0);
+
             m_CameraToFace = UnityEngine.Camera.main.transform;
         }
 

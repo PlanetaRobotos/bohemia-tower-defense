@@ -27,7 +27,7 @@ namespace Features.Towers
 
 	    [Inject] private IUpdater Updater { get; }
 
-	    protected virtual void Awake()
+	    protected virtual void Start()
         {
             Updater.Subscribe(OnUpdate, 0);
         }

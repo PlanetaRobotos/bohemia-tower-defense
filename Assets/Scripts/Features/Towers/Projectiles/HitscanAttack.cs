@@ -1,4 +1,5 @@
-﻿using Features.Health;
+﻿using System;
+using Features.Health;
 using UnityEngine;
 using Utils;
 using Infrastructure.Services.ApplicationObservers.Runtime;
@@ -52,8 +53,12 @@ namespace Features.Towers.Projectiles
         {
             m_Damager = GetComponent<Damager>();
             m_Timer = new Timer(delay, DealDamage);
-            Updater.Subscribe(OnUpdate, 0);
         }
+
+	    private void Start()
+	    {
+		    Updater.Subscribe(OnUpdate, 0);
+	    }
 
 	    /// <summary>
 	    ///     Update the m_Timer if it is available
