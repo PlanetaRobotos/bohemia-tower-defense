@@ -86,3 +86,14 @@ A streamlined, **Tower Defense Template** (6000.0.26f1) demonstrating maintainab
 * **Unity** 6000.0.26f1 (personal)
 * **Target** WebGL 2 (Chrome 123, Firefox 124 validated)
 * **Packages** Unity Addressables 1.21.19 + custom `com.atoxic.*` modules (full list in `manifest.json`)
+
+%% High‑level run‑time wiring
+flowchart TD
+subgraph Bootstrap
+GameEntry
+end
+GameEntry --> ServiceLocator
+ServiceLocator --> Updater
+ServiceLocator --> SceneService
+ServiceLocator --> StateMachine
+ServiceLocator --> WindowsService
