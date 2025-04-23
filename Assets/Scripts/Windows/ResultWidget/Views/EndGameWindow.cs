@@ -1,6 +1,5 @@
 using System.Collections;
 using Windows.Global;
-using Constellation.SceneManagement;
 using Constellation.SceneManagement.Manager;
 using Features.Data.Implementation;
 using Features.Levels.Implementation;
@@ -17,39 +16,35 @@ using GameUIState = Windows.Global.GameUI.State;
 
 namespace Windows.ResultWidget.Views
 {
-	/// <summary>
-	///     UI to display the game over screen
-	/// </summary>
-	public class EndGameWindow : BaseWindow
+    /// <summary>
+    ///     UI to display the game over screen
+    /// </summary>
+    public class EndGameWindow : BaseWindow
     {
-        [Inject] private readonly IScenesManager _scenesManager;
-        [Inject] private readonly ApplicationStateMachine _stateMachine;
-        [Inject] private readonly WindowsController _windowsController;
-        
-	    /// <summary>
-	    ///     The containing panel of the End Game UI
-	    /// </summary>
-	    public Canvas endGameCanvas;
+        /// <summary>
+        ///     The containing panel of the End Game UI
+        /// </summary>
+        public Canvas endGameCanvas;
 
-	    /// <summary>
-	    ///     Reference to the Text object that displays the result message
-	    /// </summary>
-	    public TMP_Text endGameMessageText;
+        /// <summary>
+        ///     Reference to the Text object that displays the result message
+        /// </summary>
+        public TMP_Text endGameMessageText;
 
-	    /// <summary>
-	    ///     Panel that shows final star rating
-	    /// </summary>
-	    public ScorePanel scorePanel;
+        /// <summary>
+        ///     Panel that shows final star rating
+        /// </summary>
+        public ScorePanel scorePanel;
 
-	    /// <summary>
-	    ///     Name of level select screen
-	    /// </summary>
-	    public string menuSceneName = "MainMenu";
+        /// <summary>
+        ///     Name of level select screen
+        /// </summary>
+        public string menuSceneName = "MainMenu";
 
-	    /// <summary>
-	    ///     Text to be displayed on popup
-	    /// </summary>
-	    public string levelCompleteText = "{0} COMPLETE!";
+        /// <summary>
+        ///     Text to be displayed on popup
+        /// </summary>
+        public string levelCompleteText = "{0} COMPLETE!";
 
         public string levelFailedText = "{0} FAILED!";
 
@@ -71,6 +66,10 @@ namespace Windows.ResultWidget.Views
         /// </summary>
         public Canvas nextLevelButton;
 
+        [Inject] private readonly IScenesManager _scenesManager;
+        [Inject] private readonly ApplicationStateMachine _stateMachine;
+        [Inject] private readonly WindowsController _windowsController;
+
         [Inject] private GameManager _gameManager;
         [Inject] private GameUI _gameUI;
         [Inject] private LevelManager LevelManager { get; }
@@ -81,20 +80,12 @@ namespace Windows.ResultWidget.Views
         /// </summary>
         protected void Start()
         {
-            // LazyLoad();
             endGameCanvas.enabled = false;
             nextLevelButton.enabled = false;
             nextLevelButton.gameObject.SetActive(false);
 
             LevelManager.levelCompleted += Victory;
             LevelManager.levelFailed += Defeat;
-        }
-        
-        public void ReturnToMainMenu()
-        {
-            _windowsController.TryGetWindowById(WindowsConstants.HUD_WINDOW, out var window);
-            window.Close();
-            _stateMachine.Enter<MainMenuState>();
         }
 
         /// <summary>
@@ -104,6 +95,14 @@ namespace Windows.ResultWidget.Views
         {
             SafelyUnsubscribe();
             if (_gameUI) _gameUI.Unpause();
+        }
+
+        public void ReturnToMainMenu()
+        {
+            endGameCanvas.enabled = false;
+            _windowsController.TryGetWindowById(WindowsConstants.HUD_WINDOW, out var window);
+            window.Close();
+            _stateMachine.Enter<MainMenuState>();
         }
 
         public override void OnOpen()
