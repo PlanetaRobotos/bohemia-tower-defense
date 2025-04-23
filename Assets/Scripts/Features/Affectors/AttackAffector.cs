@@ -1,4 +1,5 @@
-﻿using Features.Health;
+﻿using System;
+using Features.Health;
 using Features.Health.Core;
 using Features.Towers;
 using Features.Towers.Projectiles;
@@ -106,6 +107,11 @@ namespace Features.Affectors
                 OnFireTimer();
                 m_FireTimer = 1 / fireRate;
             }
+        }
+
+        private void Update()
+        {
+	        
         }
 
         private void OnDestroy()

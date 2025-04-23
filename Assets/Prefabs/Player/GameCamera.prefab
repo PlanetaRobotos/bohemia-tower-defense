@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 114516114452313336}
   - component: {fileID: 114500244925227986}
   - component: {fileID: 114299858145598432}
+  - component: {fileID: 145479388244480692}
   m_Layer: 0
   m_Name: GameCamera
   m_TagString: MainCamera
@@ -195,8 +196,6 @@ MonoBehaviour:
   panSpeed: 15
   flickDecayFactor: 0.2
   panAreaScreenPercentage: 0.2
-  confirmationButtons: {fileID: 0}
-  invalidButtons: {fileID: 0}
 --- !u!114 &114500244925227986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,6 +222,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startZoomMode: 1
   initialLookAt: {fileID: 0}
+--- !u!81 &145479388244480692
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1025302465844600}
+  m_Enabled: 1
 --- !u!1 &1615022176278094
 GameObject:
   m_ObjectHideFlags: 0

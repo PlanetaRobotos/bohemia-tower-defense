@@ -68,7 +68,6 @@ namespace Utils
         {
             var poolManager = Locator.GetService<PoolManager>();
             var poolable = prefab.GetComponent<Poolable>();
-            Debug.Log($"poolManager: {poolManager}");
             var instance = poolable != null ? poolManager.GetPoolable(poolable).gameObject : Instantiate(prefab);
             return instance;
         }
