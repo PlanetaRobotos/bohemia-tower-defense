@@ -84,8 +84,8 @@ A streamlined, **Tower Defense Template** (6000.0.26f1) demonstrating maintainab
 ### 7 · Environment
 
 * **Unity** 6000.0.26f1 (personal)
-* **Target** WebGL 2 (Chrome 123, Firefox 124 validated)
-* **Packages** Unity Addressables 1.21.19 + custom `com.atoxic.*` modules (full list in `manifest.json`)
+* **Target** WebGL (Chrome validated)
+* **Packages** Unity Addressables 1.21.19 + custom `com.atoxic.*` modules (full list in Packages folder)
 
 ### 8 · Architecture & Feature Dependencies
 
@@ -128,7 +128,7 @@ flowchart TD
 ```
 
 **Reading the graph**
-* **GameEntry** is the single MonoBehaviour in the launch scene; it registers packages and kicks off the **State Machine**.
+* **GameEntry** is the single MonoBehaviour in the launch scene; it registers packages and kicks off the **StateMachine**.
 * **ServiceLocator** exposes shared services to the rest of the codebase.
 * **Updater** owns the frame loop and calls `Tick()` on registered modules located inside the **Features** or **Infrastructure** assemblies.
 * **SceneService** abstracts scene switching; at build time we choose Addressables or classic `SceneManager` without touching call‑sites.
