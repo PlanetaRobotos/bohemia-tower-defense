@@ -87,13 +87,53 @@ A streamlined, **Tower Defense Template** (6000.0.26f1) demonstrating maintainab
 * **Target** WebGL 2 (Chrome 123, Firefox 124 validated)
 * **Packages** Unity Addressables 1.21.19 + custom `com.atoxic.*` modules (full list in `manifest.json`)
 
+### 8 · Architecture & Feature Dependencies
+
+```mermaid
 %% High‑level run‑time wiring
 flowchart TD
-subgraph Bootstrap
-GameEntry
-end
-GameEntry --> ServiceLocator
-ServiceLocator --> Updater
-ServiceLocator --> SceneService
-ServiceLocator --> StateMachine
-ServiceLocator --> WindowsService
+    subgraph Bootstrap
+        GameEntry
+    end
+    GameEntry --> ServiceLocator
+    ServiceLocator --> Updater
+    ServiceLocator --> SceneService
+    ServiceLocator --> StateMachine
+    ServiceLocator --> WindowsService
+    
+    subgraph Services
+        SceneService
+        StateMachine
+        WindowsService
+    end
+    
+    subgraph Runtime
+        Updater -->|ticks| Features
+        Features --> Combat
+        Features --> Agents
+        Features --> Towers
+        Updater --> Infrastructure
+        Infrastructure --> ObjectPool
+    end
+    
+    %% State machine flow
+    StateMachine --> InitState[Init]
+    InitState --> MainMenuState[MainMenu]
+    MainMenuState --> PlayingState[Playing]
+    PlayingState --> GameOverState[GameOver]
+    
+    %% Scene loading options
+    SceneService --> AddressableSceneOps[Addressables]
+    SceneService --> BuiltInSceneOps[Built‑in]
+```
+
+**Reading the graph**
+* **GameEntry** is the single MonoBehaviour in the launch scene; it registers packages and kicks off the **State Machine**.
+* **ServiceLocator** exposes shared services to the rest of the codebase.
+* **Updater** owns the frame loop and calls `Tick()` on registered modules located inside the **Features** or **Infrastructure** assemblies.
+* **SceneService** abstracts scene switching; at build time we choose Addressables or classic `SceneManager` without touching call‑sites.
+* **StateMachine** governs high‑level flow and pushes events to UI through **WindowsService** (addressable prefabs).
+* **ObjectPool**, physics layers, and audio live in **Infrastructure**, entirely decoupled from gameplay logic.
+
+This dependency‑first view demonstrates why **swap‑ability** (e.g., Scene loading mode, future update loop) comes virtually for free—systems only interact through clear, one‑directional edges.
+
