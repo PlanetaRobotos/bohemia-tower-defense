@@ -43,19 +43,19 @@ A streamlined, **Tower Defense Template** (6000.0.26f1) demonstrating maintainab
 
 ---
 
-### 4 · Development Sessions (total ≈ 12.5 h)
+### 4 · Development Sessions (total ≈ 13.5 h)
 
-| # | Date | Time (h) | Focus & Accomplishments |
-|---|------|----------|--------------------------|
-| 1 | 15 Apr 2025 | 1.0 | Project setup, Git repo, imported Tower Defense template. |
-| 2 | 15 Apr 2025 | 3.0 | Integrated Service Locator; refactored `GameManager`, `CurrencyManager`. |
-| 3 | 16 Apr 2025 | 1.5 | Implemented `Updater`; migrated eight managers; first profiler pass. |
-| 4 | 16 Apr 2025 | 2.0 | Folder/assembly restructure into **Features** & **Infrastructure**. |
-| 5 | 17 Apr 2025 | 3.0 | Addressables pipeline; converted HUD, Pause, BuildMenu windows. |
-| 6 | 17 Apr 2025 | 0.5 | Authored custom packages; updated `manifest.json`. |
-| 7 | 18 Apr 2025 | 1.0 | WebGL build tweaks, memory profiling, loading screen. |
-| 8 | 18 Apr 2025 | 0.5 | Cross-browser smoke tests; fixed audio init race condition. |
-| **Σ** | | **12.5** | — |
+| # | Date        | Time (h) | Focus & Accomplishments |
+|---|-------------|----------|--------------------------|
+| 1 | 21 Apr 2025 | 1.0      | Project setup, Git repo, imported Tower Defense template. |
+| 2 | 21 Apr 2025 | 3.0      | Integrated Service Locator; refactored `GameManager`, `CurrencyManager`. |
+| 3 | 21 Apr 2025 | 1.5      | Implemented `Updater`; migrated eight managers; first profiler pass. |
+| 4 | 22 Apr 2025 | 2.0      | Folder/assembly restructure into **Features** & **Infrastructure**. |
+| 5 | 22 Apr 2025 | 3.0      | Addressables pipeline; converted HUD, Pause, BuildMenu windows. |
+| 6 | 22 Apr 2025 | 0.5      | Authored custom packages; updated `manifest.json`. |
+| 7 | 23 Apr 2025 | 1.0      | WebGL build tweaks, memory profiling, loading screen. |
+| 8 | 23 Apr 2025 | 1.5      | Cross-browser smoke tests; fixed audio init race condition. |
+| **Σ** |             | **13.5** | — |
 
 *Times reflect hands-on coding; reading/design spikes not logged.*
 
