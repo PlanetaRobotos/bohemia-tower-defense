@@ -68,26 +68,18 @@ namespace Features.Spawning
         ///     The attached the collider
         /// </summary>
         public Collider ghostCollider { get; private set; }
-        
-        private void Start()
-        {
-	        Updater.Subscribe(OnUpdate, 0);
-        }
-
-        protected virtual void OnDestroy()
-        {
-            Updater?.Unsubscribe(OnUpdate);
-        }
 
         /// <summary>
         ///     Damp the movement of the ghost
         /// </summary>
-        protected virtual void OnUpdate(float _)
+        protected virtual void Update()
         {
-            var currentPos = transform.position;
+	        var currentPos = transform.position;
 
-            if (Vector3.SqrMagnitude(currentPos - m_TargetPosition) > 0.01f)
+	        var sqrMagnitude = Vector3.SqrMagnitude(currentPos - m_TargetPosition);
+	        if (sqrMagnitude > 0.04f)
             {
+	            
                 currentPos = Vector3.SmoothDamp(currentPos, m_TargetPosition, ref m_MoveVel, dampSpeed);
 
                 transform.position = currentPos;

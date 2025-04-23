@@ -41,5 +41,15 @@ namespace Features.Input.Models
 	    ///     Was this input previously holding, then dragged?
 	    /// </summary>
 	    public bool wasHold;
+
+        /// <summary>
+        ///     Returns a string that represents the current object.
+        /// </summary>
+        public override string ToString()
+        {
+            return $"PointerActionInfo[Position: {currentPosition}, Previous: {previousPosition}, Delta: {delta}, " +
+                   $"FlickVel: {flickVelocity}, IsDrag: {isDrag}, IsHold: {isHold}, WasHold: {wasHold}, " +
+                   $"StartPos: {startPosition}, StartTime: {startTime:F2}, TotalMovement: {totalMovement:F2}]";
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Features.Input.Extensions;
 using Features.Input.Models;
 using UnityEngine;
 using UnityInput = UnityEngine.Input;
@@ -29,7 +30,7 @@ namespace Features.Input.Declaration
 	    /// <summary>
 	    ///     Gets whether the scheme should be activated or not
 	    /// </summary>
-	    public override bool shouldActivate => UnityInput.touchCount > 0;
+	    public override bool shouldActivate => TouchHelper.Count > 0;
 
 	    /// <summary>
 	    ///     This default scheme on IOS and Android devices
@@ -225,7 +226,7 @@ namespace Features.Input.Declaration
                 if (cameraRig.floorPlane.Raycast(prevRay, out dist)) startPoint = prevRay.GetPoint(dist);
                 var panAmount = startPoint - endPoint;
                 // If this is a touch, we divide the pan amount by the number of touches
-                if (UnityInput.touchCount > 0) panAmount /= UnityInput.touchCount;
+                if (TouchHelper.Count > 0) panAmount /= TouchHelper.Count;
 
                 PanCamera(panAmount);
             }

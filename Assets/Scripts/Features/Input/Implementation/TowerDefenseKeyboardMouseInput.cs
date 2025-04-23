@@ -13,16 +13,23 @@ namespace Features.Input.Implementation
         [Inject] private GameUI _gameUI;
         [Inject] private InputController _inputController;
         [Inject] private LevelManager LevelManager { get; }
-    
-        /// <summary>
-        ///     Handle camera panning behaviour
-        /// </summary>
-        protected override void OnUpdate(float _)
-        {
-            base.OnUpdate(_);
 
-            // Escape handling
+        /// <summary>
+        ///     Main update loop: handle camera, ghost movement, escape, and build hotkeys
+        /// </summary>
+        protected override void Update()
+        {
+            base.Update();
+
+            // Always drive ghost movement per-frame when in build mode
+            if (_gameUI.isBuilding)
+            {
+                _gameUI.TryMoveGhost(_inputController.basicMouseInfo, false);
+            }
+
+            // Escape key handling
             if (UnityInput.GetKeyDown(KeyCode.Escape))
+            {
                 switch (_gameUI.state)
                 {
                     case State.Normal:
@@ -31,99 +38,83 @@ namespace Features.Input.Implementation
                         else
                             _gameUI.Pause();
                         break;
-                    case State.BuildingWithDrag:
                     case State.Building:
+                    case State.BuildingWithDrag:
                         _gameUI.CancelGhostPlacement();
                         break;
                 }
+            }
 
-            // place towers with keyboard numbers
-            var towerLibraryCount = LevelManager.towerLibrary.Count;
-
-            // find the lowest value between 9 (keyboard numbers)
-            // and the number of towers in the library
-            var count = Mathf.Min(9, towerLibraryCount);
-
-            // check each number key
-            for (var i = 0; i < count; i++)
+            // Tower build hotkeys (1-9, 0 as 10)
+            int maxKeys = Mathf.Min(9, LevelManager.towerLibrary.Count);
+            for (int i = 0; i < maxKeys; i++)
             {
-                var key = KeyCode.Alpha1 + i;
-                if (UnityInput.GetKeyDown(key))
+                if (UnityInput.GetKeyDown(KeyCode.Alpha1 + i))
                 {
-                    var controller = LevelManager.towerLibrary[key - KeyCode.Alpha1];
-                    if (LevelManager.currency.CanAfford(controller.purchaseCost))
+                    var towerPrefab = LevelManager.towerLibrary[i];
+                    if (LevelManager.currency.CanAfford(towerPrefab.purchaseCost))
                     {
-                        if (_gameUI.isBuilding) _gameUI.CancelGhostPlacement();
-                        _gameUI.SetToBuildMode(controller);
-                        _gameUI.TryMoveGhost(_inputController.basicMouseInfo);
+                        if (_gameUI.isBuilding)
+                        {
+                            _gameUI.CancelGhostPlacement();
+                        }
+                        _gameUI.SetToBuildMode(towerPrefab);
                     }
-
                     break;
                 }
             }
-
-            // check for 0 key (10th tower)
-            if (count < 10 && UnityInput.GetKeyDown(KeyCode.Alpha0))
+            // 0 key as 10th
+            if (LevelManager.towerLibrary.Count >= 10 && UnityInput.GetKeyDown(KeyCode.Alpha0))
             {
-                var controller = LevelManager.towerLibrary[9];
-                _gameUI.SetToBuildMode(controller);
-                _gameUI.TryMoveGhost(_inputController.basicMouseInfo);
+                var towerPrefab = LevelManager.towerLibrary[9];
+                _gameUI.SetToBuildMode(towerPrefab);
             }
         }
 
         /// <summary>
-        ///     Register input events
+        ///     Register tap events
         /// </summary>
         protected override void OnEnable()
         {
             base.OnEnable();
-
             _inputController.tapped += OnTap;
-            _inputController.mouseMoved += OnMouseMoved;
         }
 
         /// <summary>
-        ///     Deregister input events
+        ///     Deregister tap events
         /// </summary>
         protected override void OnDisable()
         {
             _inputController.tapped -= OnTap;
-            _inputController.mouseMoved -= OnMouseMoved;
+            base.OnDisable();
         }
 
         /// <summary>
-        ///     Ghost follows pointer
-        /// </summary>
-        private void OnMouseMoved(PointerInfo pointer)
-        {
-            // We only respond to mouse info
-            var mouseInfo = pointer as MouseCursorInfo;
-
-            if (mouseInfo != null && _gameUI.isBuilding) _gameUI.TryMoveGhost(pointer, false);
-        }
-
-        /// <summary>
-        ///     Select towers or position ghosts
+        ///     Handle click/tap for tower placement and selection
         /// </summary>
         private void OnTap(PointerActionInfo pointer)
         {
-            // We only respond to mouse info
-            var mouseInfo = pointer as MouseButtonInfo;
+            // ignore UI hits
+            var mb = pointer as MouseButtonInfo;
+            if (mb == null || mb.startedOverUI) return;
 
-            if (mouseInfo != null && !mouseInfo.startedOverUI)
+            if (_gameUI.isBuilding)
             {
-                if (_gameUI.isBuilding)
+                // LMB to confirm, RMB to cancel
+                if (mb.mouseButtonId == 0)
                 {
-                    if (mouseInfo.mouseButtonId == 0) // LMB confirms
-                        _gameUI.TryPlaceTower(pointer);
-                    else // RMB cancels
-                        _gameUI.CancelGhostPlacement();
+                    _gameUI.TryPlaceTower(pointer);
                 }
-                else
+                else if (mb.mouseButtonId == 1)
                 {
-                    if (mouseInfo.mouseButtonId == 0)
-                        // select towers
-                        _gameUI.TrySelectTower(pointer);
+                    _gameUI.CancelGhostPlacement();
+                }
+            }
+            else // Normal state: select tower on LMB
+            {
+                if (mb.mouseButtonId == 0)
+                {
+                    _gameUI.TrySelectTower(pointer);
                 }
             }
         }

@@ -1,94 +1,94 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Features.Input.Extensions;
 using Features.Input.Models;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Infrastructure.Services.ApplicationObservers.Runtime;
-using Debug = System.Diagnostics.Debug;
 using UnityInput = UnityEngine.Input;
 
 namespace Features.Input.Implementation
 {
-	/// <summary>
-	///     Class to manage tap/drag/pinch gestures and other controls
-	/// </summary>
-	public class InputController : MonoBehaviour
+    /// <summary>
+    ///     Class to manage tap/drag/pinch gestures and other controls
+    /// </summary>
+    public class InputController : MonoBehaviour
     {
-	    /// <summary>
-	    ///     How quickly flick velocity is accumulated with movements
-	    /// </summary>
-	    private const float k_FlickAccumulationFactor = 0.8f;
+        /// <summary>
+        ///     How quickly flick velocity is accumulated with movements
+        /// </summary>
+        private const float k_FlickAccumulationFactor = 0.8f;
 
-	    /// <summary>
-	    ///     How far fingers must move before starting a drag
-	    /// </summary>
-	    public float dragThresholdTouch = 5;
+        /// <summary>
+        ///     How far fingers must move before starting a drag
+        /// </summary>
+        public float dragThresholdTouch = 5;
 
-	    /// <summary>
-	    ///     How far mouse must move before starting a drag
-	    /// </summary>
-	    public float dragThresholdMouse;
+        /// <summary>
+        ///     How far mouse must move before starting a drag
+        /// </summary>
+        public float dragThresholdMouse;
 
-	    /// <summary>
-	    ///     How long before a touch can no longer be considered a tap
-	    /// </summary>
-	    public float tapTime = 0.2f;
+        /// <summary>
+        ///     How long before a touch can no longer be considered a tap
+        /// </summary>
+        public float tapTime = 0.2f;
 
-	    /// <summary>
-	    ///     How long before a touch is considered a hold
-	    /// </summary>
-	    public float holdTime = 0.8f;
+        /// <summary>
+        ///     How long before a touch is considered a hold
+        /// </summary>
+        public float holdTime = 0.8f;
 
-	    /// <summary>
-	    ///     Sensitivity of mouse-wheel based zoom
-	    /// </summary>
-	    public float mouseWheelSensitivity = 1.0f;
+        /// <summary>
+        ///     Sensitivity of mouse-wheel based zoom
+        /// </summary>
+        public float mouseWheelSensitivity = 1.0f;
 
-	    /// <summary>
-	    ///     How many mouse buttons to track
-	    /// </summary>
-	    public int trackMouseButtons = 2;
+        /// <summary>
+        ///     How many mouse buttons to track
+        /// </summary>
+        public int trackMouseButtons = 2;
 
-	    /// <summary>
-	    ///     Flick movement threshold
-	    /// </summary>
-	    public float flickThreshold = 2f;
+        /// <summary>
+        ///     Flick movement threshold
+        /// </summary>
+        public float flickThreshold = 2f;
 
-	    /// <summary>
-	    ///     Mouse button info
-	    /// </summary>
-	    private List<MouseButtonInfo> m_MouseInfo;
+        /// <summary>
+        ///     Mouse button info
+        /// </summary>
+        private List<MouseButtonInfo> m_MouseInfo;
 
-	    /// <summary>
-	    ///     All the touches we're tracking
-	    /// </summary>
-	    private List<TouchInfo> m_Touches;
+        /// <summary>
+        ///     All the touches we're tracking
+        /// </summary>
+        private List<TouchInfo> m_Touches;
 
-	    /// <summary>
-	    ///     Gets the number of active touches
-	    /// </summary>
-	    public int activeTouchCount => m_Touches.Count;
+        /// <summary>
+        ///     Gets the number of active touches
+        /// </summary>
+        public int activeTouchCount => m_Touches.Count;
 
-	    /// <summary>
-	    ///     Tracks if any of the mouse buttons were pressed this frame
-	    /// </summary>
-	    public bool mouseButtonPressedThisFrame { get; private set; }
+        /// <summary>
+        ///     Tracks if any of the mouse buttons were pressed this frame
+        /// </summary>
+        public bool mouseButtonPressedThisFrame { get; private set; }
 
-	    /// <summary>
-	    ///     Tracks if the mouse moved this frame
-	    /// </summary>
-	    public bool mouseMovedOnThisFrame { get; private set; }
+        /// <summary>
+        ///     Tracks if the mouse moved this frame
+        /// </summary>
+        public bool mouseMovedOnThisFrame { get; private set; }
 
-	    /// <summary>
-	    ///     Tracks if a touch began this frame
-	    /// </summary>
-	    public bool touchPressedThisFrame { get; private set; }
+        /// <summary>
+        ///     Tracks if a touch began this frame
+        /// </summary>
+        public bool touchPressedThisFrame { get; private set; }
 
-	    /// <summary>
-	    ///     Current mouse pointer info
-	    /// </summary>
-	    public MouseCursorInfo basicMouseInfo { get; private set; }
+        /// <summary>
+        ///     Current mouse pointer info
+        /// </summary>
+        public MouseCursorInfo basicMouseInfo { get; private set; }
 
         [Inject] private IUpdater Updater { get; }
 
@@ -105,7 +105,7 @@ namespace Features.Input.Implementation
                     mouseButtonId = i
                 });
 
-            UnityInput.simulateMouseWithTouches = false;
+            // UnityInput.simulateMouseWithTouches = false;
         }
 
         private void Start()
@@ -188,8 +188,13 @@ namespace Features.Input.Implementation
 
             // Move event
             if (basicMouseInfo.delta.sqrMagnitude > Mathf.Epsilon)
+            {
                 if (mouseMoved != null)
+                {
                     mouseMoved(basicMouseInfo);
+                }
+            }
+
             // Button events
             for (var i = 0; i < trackMouseButtons; ++i)
             {
@@ -291,9 +296,12 @@ namespace Features.Input.Implementation
         private void UpdateTouches()
         {
             touchPressedThisFrame = false;
-            for (var i = 0; i < UnityInput.touchCount; ++i)
+
+            int count = TouchHelper.Count;
+            for (int i = 0; i < count; ++i)
             {
-                var touch = UnityInput.GetTouch(i);
+                // fetch a "Touch" either from the helper (WebGL/Editor) or the real Input API
+                Touch touch = GetTouch(i);
 
                 // Find existing touch, or create new one
                 var existingTouch = m_Touches.FirstOrDefault(t => t.touchId == touch.fingerId);
@@ -309,10 +317,8 @@ namespace Features.Input.Implementation
                         startTime = Time.realtimeSinceStartup,
                         startedOverUI = EventSystem.current.IsPointerOverGameObject(touch.fingerId)
                     };
-
                     m_Touches.Add(existingTouch);
 
-                    // Sanity check
                     Debug.Assert(touch.phase == TouchPhase.Began);
                 }
 
@@ -320,29 +326,24 @@ namespace Features.Input.Implementation
                 {
                     case TouchPhase.Began:
                         touchPressedThisFrame = true;
-                        if (pressed != null) pressed(existingTouch);
+                        pressed?.Invoke(existingTouch);
                         break;
 
                     case TouchPhase.Moved:
                         var wasDrag = existingTouch.isDrag;
                         UpdateMovingFinger(touch, existingTouch);
 
-                        // Is this a drag?
                         existingTouch.isDrag = existingTouch.totalMovement >= dragThresholdTouch;
-
                         if (existingTouch.isDrag)
                         {
                             if (existingTouch.isHold)
                             {
-                                existingTouch.wasHold = existingTouch.isHold;
+                                existingTouch.wasHold = true;
                                 existingTouch.isHold = false;
                             }
 
-                            // Did it just start now?
-                            if (!wasDrag)
-                                if (startedDrag != null)
-                                    startedDrag(existingTouch);
-                            if (dragged != null) dragged(existingTouch);
+                            if (!wasDrag) startedDrag?.Invoke(existingTouch);
+                            dragged?.Invoke(existingTouch);
 
                             if (existingTouch.delta.sqrMagnitude > flickThreshold * flickThreshold)
                                 existingTouch.flickVelocity =
@@ -358,37 +359,50 @@ namespace Features.Input.Implementation
 
                         break;
 
-                    case TouchPhase.Canceled:
-                    case TouchPhase.Ended:
-                        // Could have moved a bit
-                        UpdateMovingFinger(touch, existingTouch);
-                        // Quick enough (with no drift) to be a tap?
-                        if (!existingTouch.isDrag &&
-                            Time.realtimeSinceStartup - existingTouch.startTime < tapTime)
-                            if (tapped != null)
-                                tapped(existingTouch);
-                        if (released != null) released(existingTouch);
-
-                        // Remove from track list
-                        m_Touches.Remove(existingTouch);
-                        break;
-
                     case TouchPhase.Stationary:
                         UpdateMovingFinger(touch, existingTouch);
                         UpdateHoldingFinger(existingTouch);
                         existingTouch.flickVelocity = Vector2.zero;
                         break;
+
+                    case TouchPhase.Canceled:
+                    case TouchPhase.Ended:
+                        UpdateMovingFinger(touch, existingTouch);
+
+                        if (!existingTouch.isDrag &&
+                            Time.realtimeSinceStartup - existingTouch.startTime < tapTime)
+                            tapped?.Invoke(existingTouch);
+
+                        released?.Invoke(existingTouch);
+                        m_Touches.Remove(existingTouch);
+                        break;
                 }
             }
 
-            if (activeTouchCount >= 2 && (m_Touches[0].isDrag ||
-                                          m_Touches[1].isDrag))
-                if (pinched != null)
-                    pinched(new PinchInfo
-                    {
-                        touch1 = m_Touches[0],
-                        touch2 = m_Touches[1]
-                    });
+            if (m_Touches.Count >= 2 &&
+                (m_Touches[0].isDrag || m_Touches[1].isDrag))
+            {
+                pinched?.Invoke(new PinchInfo { touch1 = m_Touches[0], touch2 = m_Touches[1] });
+            }
+        }
+
+        /// <summary>
+        /// Returns a Touch object that comes from TouchHelper on WebGL/Editor,
+        /// or from Input.GetTouch on other platforms.
+        /// </summary>
+        private Touch GetTouch(int index)
+        {
+#if UNITY_WEBGL || UNITY_EDITOR
+            // only a single "mouse-as-touch" on WebGL/Editor
+            return new Touch
+            {
+                fingerId = 0,
+                position = TouchHelper.Position,
+                phase = TouchHelper.Phase
+            };
+#else
+    return UnityInput.GetTouch(index);
+#endif
         }
 
         /// <summary>

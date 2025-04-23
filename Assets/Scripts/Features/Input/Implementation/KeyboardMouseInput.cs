@@ -1,4 +1,5 @@
 ﻿using Features.Input.Declaration;
+using Features.Input.Extensions;
 using Features.Input.Models;
 using UnityEngine;
 using UnityInput = UnityEngine.Input;
@@ -35,7 +36,7 @@ namespace Features.Input.Implementation
         {
             get
             {
-                if (UnityInput.touchCount > 0) return false;
+                if (TouchHelper.Count > 0) return false;
                 var anyKey = UnityInput.anyKey;
                 var buttonPressedThisFrame = inputController.mouseButtonPressedThisFrame;
                 var movedMouseThisFrame = inputController.mouseMovedOnThisFrame;
@@ -51,7 +52,7 @@ namespace Features.Input.Implementation
         {
             get
             {
-#if UNITY_STANDALONE || UNITY_EDITOR
+#if UNITY_STANDALONE || UNITY_EDITOR || UNITY_WEBGL
                 return true;
 #else
 				return false;
@@ -62,7 +63,7 @@ namespace Features.Input.Implementation
 	    /// <summary>
 	    ///     Handle camera panning behaviour
 	    /// </summary>
-	    protected virtual void OnUpdate(float _)
+	    protected virtual void Update()
         {
             if (cameraRig != null)
             {
@@ -267,12 +268,10 @@ namespace Features.Input.Implementation
 
         protected void Start()
         {
-            Updater.Subscribe(OnUpdate, 0);
         }
 
         protected void OnDestroy()
         {
-            Updater?.Unsubscribe(OnUpdate);
         }
     }
 }

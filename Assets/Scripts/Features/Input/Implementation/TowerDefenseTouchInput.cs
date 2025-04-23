@@ -2,6 +2,7 @@
 using Windows.HUD.Views;
 using Windows.TowerWidget.Views;
 using Features.Input.Declaration;
+using Features.Input.Extensions;
 using Features.Input.Models;
 using UnityEngine;
 using UnityInput = UnityEngine.Input;
@@ -68,9 +69,9 @@ namespace Features.Input.Implementation
 	    /// <summary>
 	    ///     Decay flick
 	    /// </summary>
-	    protected override void OnUpdate(float _)
+	    protected override void OnUpdate(float delta)
         {
-            base.OnUpdate(_);
+            base.OnUpdate(delta);
 
             // Edge pan
             if (m_DragPointer != null) EdgePan();
@@ -312,7 +313,7 @@ namespace Features.Input.Implementation
             // Early return for two reasons
             // 1. We are not moving into Build Mode
             // 2. We are not actually touching
-            if (UnityInput.touchCount == 0) return;
+            if (TouchHelper.Count == 0) return;
             if (currentState == State.Building && previousState != State.BuildingWithDrag)
             {
                 _gameUI.MoveGhostToCenter();

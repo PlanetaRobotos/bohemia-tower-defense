@@ -650,7 +650,8 @@ namespace Windows.Global
 			{
 				return false;
 			}
-			return LevelManager.currency.CanAfford(m_CurrentTower.controller.purchaseCost);
+			bool canAfford = LevelManager.currency.CanAfford(m_CurrentTower.controller.purchaseCost);
+			return canAfford;
 		}
 
 		/// <summary>
@@ -696,7 +697,8 @@ namespace Windows.Global
 			}
 			UIPointer uiPointer = WrapPointer(pointerInfo);
 			RaycastHit hit;
-			return m_CurrentTower.ghostCollider.Raycast(uiPointer.ray, out hit, float.MaxValue);
+			bool isOver = m_CurrentTower.ghostCollider.Raycast(uiPointer.ray, out hit, float.MaxValue);
+			return isOver;
 		}
 
 		/// <summary>
@@ -756,10 +758,6 @@ namespace Windows.Global
 		/// </exception>
 		public void MoveGhostToCenter()
 		{
-			if (state != State.Building)
-			{
-				throw new InvalidOperationException("Trying to move ghost when not in Build Mode");
-			}
 			// try to find a valid placement 
 			Ray ray = m_Camera.ScreenPointToRay(new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
 			RaycastHit placementHit;
@@ -814,12 +812,13 @@ namespace Windows.Global
 		/// </summary>
 		protected UIPointer WrapPointer(PointerInfo pointerInfo)
 		{
-			return new UIPointer
+			var pointer = new UIPointer
 			{
 				overUI = IsOverUI(pointerInfo),
 				pointer = pointerInfo,
 				ray = m_Camera.ScreenPointToRay(pointerInfo.currentPosition)
 			};
+			return pointer;
 		}
 
 		/// <summary>
@@ -855,7 +854,8 @@ namespace Windows.Global
 				throw new ArgumentException("Passed pointerInfo is not a TouchInfo or MouseCursorInfo", "pointerInfo");
 			}
 
-			return currentEventSystem.IsPointerOverGameObject(pointerId);
+			bool isOver = currentEventSystem.IsPointerOverGameObject(pointerId);
+			return isOver;
 		}
 
 		/// <summary>
@@ -891,23 +891,19 @@ namespace Windows.Global
 		/// </summary>
 		protected virtual void MoveGhostWithRaycastHit(RaycastHit raycast)
 		{
-			// We successfully hit one of our placement areas
-			// Try and get a placement area on the object we hit
 			m_CurrentArea = raycast.collider.GetComponent<IPlacementArea>();
 
 			if (m_CurrentArea == null)
 			{
-				Debug.LogError("There is not an IPlacementArea attached to the collider found on the m_PlacementAreaMask");
-				return;
+				throw new InvalidOperationException("No IPlacementArea found on collider");
 			}
 			m_GridPosition = m_CurrentArea.WorldToGrid(raycast.point, m_CurrentTower.controller.dimensions);
 			TowerFitStatus fits = m_CurrentArea.Fits(m_GridPosition, m_CurrentTower.controller.dimensions);
 
 			m_CurrentTower.Show();
 			m_GhostPlacementPossible = fits == TowerFitStatus.Fits && IsValidPurchase();
-			m_CurrentTower.Move(m_CurrentArea.GridToWorld(m_GridPosition, m_CurrentTower.controller.dimensions),
-								m_CurrentArea.transform.rotation,
-								m_GhostPlacementPossible);
+			Vector3 worldPos = m_CurrentArea.GridToWorld(m_GridPosition, m_CurrentTower.controller.dimensions);
+			m_CurrentTower.Move(worldPos, m_CurrentArea.transform.rotation, m_GhostPlacementPossible);
 		}
 
 
@@ -984,7 +980,8 @@ namespace Windows.Global
 
 			// Raycast onto placement area layer
 			RaycastHit hit;
-			if (Physics.Raycast(pointer.ray, out hit, float.MaxValue, placementAreaMask))
+			bool hasHit = Physics.Raycast(pointer.ray, out hit, float.MaxValue, placementAreaMask);
+			if (hasHit)
 			{
 				pointer.raycast = hit;
 			}
@@ -1044,9 +1041,10 @@ namespace Windows.Global
 			}
 			TowerFitStatus fits = m_CurrentArea.Fits(m_GridPosition, m_CurrentTower.controller.dimensions);
 			bool valid = fits == TowerFitStatus.Fits && IsValidPurchase();
-			m_CurrentTower.Move(m_CurrentArea.GridToWorld(m_GridPosition, m_CurrentTower.controller.dimensions),
-								m_CurrentArea.transform.rotation,
-								valid);
+			Vector3 worldPos = m_CurrentArea.GridToWorld(m_GridPosition, m_CurrentTower.controller.dimensions);
+			
+			m_CurrentTower.Move(worldPos, m_CurrentArea.transform.rotation, valid);
+			
 			if (valid && !m_GhostPlacementPossible && ghostBecameValid != null)
 			{
 				m_GhostPlacementPossible = true;
